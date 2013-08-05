@@ -1,0 +1,9 @@
+{% extends "main.json" %}
+{% block content %}
+{
+    "response":"success",
+    "welcome": "{{ data.welcome }}",
+    "greeting": "{{ data.greeting }}",
+    "language": "es"
+}
+{% endblock %}

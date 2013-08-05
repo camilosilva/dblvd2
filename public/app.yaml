@@ -1,0 +1,21 @@
+application: twigapp
+version: 1
+runtime: php
+api_version: 1
+
+handlers:
+
+- url: /
+  script: index.php
+
+- url: /img
+  static_dir: img
+
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /javascripts
+  static_dir: javascripts
+  
+- url: /.*
+  script: index.php

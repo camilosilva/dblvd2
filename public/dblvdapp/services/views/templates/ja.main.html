@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+
+{% block title %}日本語版{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    <h2>Twig デモ</h2>
+    <p class="important">
+        {{ welcome }}
+    </p>
+{% endblock %}

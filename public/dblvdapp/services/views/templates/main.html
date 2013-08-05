@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        {% block head %}
+            <link rel="stylesheet" href="/stylesheets/bootstrap.css" media="screen" />
+            <title>{% block title %}{% endblock %} - Twig Demo</title>
+        {% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+        <h1>{{ greeting }}</h1>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}
+                &copy; Copyright 2013 by <a href="http://www.camilo-silva.com/">Camilo Silva</a>.
+            {% endblock %}
+        </div>
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="/javascripts/bootstrap.js"></script>
+    </body>
+</html>
