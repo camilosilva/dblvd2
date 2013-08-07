@@ -1,5 +1,5 @@
 <?php
-use \TwigApp\Services\Models as Models;
+use \DblvdApp\Services\Models as Models;
 
 $app = new Silex\Application();
 

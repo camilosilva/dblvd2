@@ -1,6 +1,6 @@
 <?php
 
-namespace TwigApp\Services\Models;
+namespace DblvdApp\Services\Models;
 
 class TwigJsonExtension extends \Twig_Extension {
     
