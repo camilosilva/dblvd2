@@ -28,9 +28,8 @@ $app->get('/{lang}/', function($lang) use($app) {
         
         case 'en':
         default:
-            $fileView = 'en.main';
-            $contents = array('welcome' => 'Welcome to my awesome homepage.',
-                              'greeting' => 'Hello People!');
+            $fileView = 'index';
+            $contents = array();
             break;
     }
     
