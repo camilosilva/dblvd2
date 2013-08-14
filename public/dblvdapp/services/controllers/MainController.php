@@ -1,7 +1,14 @@
 <?php
 use \DblvdApp\Services\Models as Models;
+use \Ruckuus\Silex\ActiveRecordServiceProvider as ARProvider;
 
-$app = new Silex\Application();
+$app = new \Silex\Application();
+
+$app->register(new ARProvider(), array(
+    'ar.model_dir' => MODELS,
+    'ar.connections' =>  array ('development' => 'mysql://root@localhost/test22'),
+    'ar.default_connection' => 'development',
+));
 
 $app->get('/{lang}/', function($lang) use($app) { 
     $lang = $app->escape($lang);
@@ -28,6 +35,18 @@ $app->get('/{lang}/', function($lang) use($app) {
         
         case 'en':
         default:
+            try{
+                $role = new Models\Role();
+                $role->printTest();
+            }
+            catch(Exception $e) {
+                //error_log(print_r($e, true));
+                var_dump($e);
+                //print_r($e,true);
+            }
+            
+            //$role->printThis();
+            error_log("TEST 22");
             $fileView = 'index';
             $contents = array();
             break;

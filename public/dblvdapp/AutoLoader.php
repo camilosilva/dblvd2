@@ -1,6 +1,6 @@
 <?php
 
-namespace TwigApp;
+namespace DblvdApp;
 
 class AutoLoader {
 
