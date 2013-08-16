@@ -3,12 +3,42 @@ use \DblvdApp\Services\Models as Models;
 use \Ruckuus\Silex\ActiveRecordServiceProvider as ARProvider;
 
 $app = new \Silex\Application();
+$app['debug'] = true;
+$app['charset'] = 'utf-8';
+
+$app->register(new \Silex\Provider\TwigServiceProvider(), array(
+        'twig.path' => SERVICES .DS. 'views' .DS. 'templates',
+        'twig.options' => array(
+            'cache' => SERVICES .DS. 'views' .DS. 'templates' .DS. 'cache',
+            'auto_reload' => true,
+            'charset' => 'utf-8'
+        )
+    ));
 
 $app->register(new ARProvider(), array(
     'ar.model_dir' => MODELS,
     'ar.connections' =>  array ('development' => 'mysql://root@localhost/test22'),
     'ar.default_connection' => 'development',
 ));
+
+$app->get('/{locale}/about/', function () use ($app) {
+    $locale = $app['request']->get('locale');
+    switch($locale) {
+        case 'ja':
+        case 'jp':
+            $fileView = 'ja.main.html';
+            $contents = array('welcome'=>'私のサイトへようこそ！', 'greeting'=>'友達こんにちは！');
+            break;
+        
+        case 'es':
+        default:
+            $fileView = 'es.main.html';
+            $contents = array('welcome' => 'Bienvenidos a mi asombrosa pagina web!',
+                              'greeting' => 'Hola mi Gente!');
+            break;
+    }
+    return $app['twig']->render($fileView, $contents);
+})->bind('about');
 
 $app->get('/{lang}/', function($lang) use($app) { 
     $lang = $app->escape($lang);
@@ -51,7 +81,7 @@ $app->get('/{lang}/', function($lang) use($app) {
             $contents = array();
             break;
     }
-    
+    /*
     //Create the Twig loader and direct the template source
     $loader = new Twig_Loader_Filesystem(SERVICES .DS. 'views' .DS. 'templates');
     //Configure Twig's environment
@@ -60,18 +90,18 @@ $app->get('/{lang}/', function($lang) use($app) {
         'auto_reload' => true,
         'charset' => 'utf-8'
     ));
-    
+    */
     //Check for JSON requests
     if(isset($requests['json'])){    
         $fileView .= '.json';
         $contents = array('data'=>$contents);
-        $twig->addExtension(new Models\TwigJsonExtension());
+        $app['twig']->addExtension(new Models\TwigJsonExtension());
     } else {
         $fileView .= '.html';
     }
     
     //Render the page
-    return $twig->render($fileView, $contents);
+    return $app['twig']->render($fileView, $contents);
 
 });
 

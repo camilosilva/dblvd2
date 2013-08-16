@@ -7,7 +7,7 @@ RewriteCond %{REQUEST_FILENAME} !index\.php$
 RewriteCond %{REQUEST_URI} !/stylesheets/
 RewriteCond %{REQUEST_URI} !/javascripts/
 RewriteCond %{REQUEST_URI} !/img/
-RewriteRule ^([^/]+)/ index.php?action=$1 [QSA,L]
+RewriteRule ^([^/]+)/ index.php [QSA,L]
 
 #anything after that does not belong above
 RewriteCond %{REQUEST_URI} !/favicon\.ico$
