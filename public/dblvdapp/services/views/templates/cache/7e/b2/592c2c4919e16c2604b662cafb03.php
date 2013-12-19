@@ -61,6 +61,7 @@ class __TwigTemplate_7eb2592c2c4919e16c2604b662cafb03 extends Twig_Template
     \t\t\t\t\t<li class=\"active\">
     \t\t\t\t\t\t<a href=\"#\">Home</a>
     \t\t\t\t\t</li>
+\t\t\t\t\t<!--
     \t\t\t\t\t<li>
     \t\t\t\t\t\t<a href=\"#about\">About</a>
     \t\t\t\t\t</li>
@@ -90,7 +91,9 @@ class __TwigTemplate_7eb2592c2c4919e16c2604b662cafb03 extends Twig_Template
     \t\t\t\t\t\t\t</li>
     \t\t\t\t\t\t</ul>
     \t\t\t\t\t</li>
+\t\t\t\t\t-->
     \t\t\t\t</ul>
+\t\t\t\t<!--
     \t\t\t\t<form class=\"navbar-form pull-right\">
     \t\t\t\t\t<input class=\"span2\" type=\"text\" placeholder=\"Email\">
     \t\t\t\t\t<input class=\"span2\" type=\"password\" placeholder=\"Password\">
@@ -98,6 +101,7 @@ class __TwigTemplate_7eb2592c2c4919e16c2604b662cafb03 extends Twig_Template
     \t\t\t\t\t\tSign in
     \t\t\t\t\t</button>
     \t\t\t\t</form>
+\t\t\t\t-->
     \t\t\t</div>
     \t\t\t<!--/.nav-collapse -->
     \t\t</div>
