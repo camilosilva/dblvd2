@@ -1,7 +1,9 @@
 /* Schema of DadBlvd2 */
-CREATE DATABASE qa1dadblvd
+CREATE DATABASE miluloco_qa1dadblvd
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_unicode_ci;
+  
+USE miluloco_qa1dadblvd;
 
 drop table if exists roles;
 create table roles(
