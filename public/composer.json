@@ -3,5 +3,11 @@
         "twig/twig": "1.*",
         "silex/silex": "~1.0",
 		"ruckuus/php-activerecord-service-provider": "dev-master"
-    }
+    },
+    "repositories": [
+	{
+	    "type": "git",
+	    "url": "git://github.com/ruckuus/ActiveRecordServiceProvider.git"
+	}
+    ]
 }
