@@ -2,13 +2,13 @@
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(dirname( __DIR__ )) );
 define('VENDOR', ROOT . DS . 'vendor');
-define('CORE', ROOT . DS . 'dblvdapp');
-define('CONFIG', CORE . DS . 'config');
-define('ERROR', CORE . DS . 'error');
-define('SERVICES', CORE . DS . 'services');
-define('CONTROLLERS', SERVICES . DS . 'controllers');
-define('VIEWS', SERVICES . DS . 'views');
-define('MODELS', SERVICES . DS . 'models');
+define('CORE', ROOT . DS . 'DblvdApp');
+define('CONFIG', CORE . DS . 'Config');
+define('ERROR', CORE . DS . 'Error');
+define('SERVICES', CORE . DS . 'Services');
+define('CONTROLLERS', SERVICES . DS . 'Controllers');
+define('VIEWS', SERVICES . DS . 'Views');
+define('MODELS', SERVICES . DS . 'Models');
 
 //registration of autoloader
 require_once(VENDOR . DS . 'autoload.php');
