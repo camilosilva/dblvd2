@@ -11,8 +11,14 @@ define('VIEWS', SERVICES . DS . 'views');
 define('MODELS', SERVICES . DS . 'models');
 
 //registration of autoloader
-require CORE . DS . 'AutoLoader.php';
-\DblvdApp\AutoLoader::register('DblvdApp', ROOT);
-
-//registration of Twig
 require_once(VENDOR . DS . 'autoload.php');
+
+$__LOADER = new \Composer\Autoload\ClassLoader();
+
+// register classes with namespaces
+$__LOADER->add('DblvdApp', ROOT);
+ 
+// activate the autoloader
+$__LOADER->register();
+
+

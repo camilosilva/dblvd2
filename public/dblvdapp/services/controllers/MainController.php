@@ -1,12 +1,12 @@
 <?php
-use \DblvdApp\Services\Models as Models;
-use \Ruckuus\Silex\ActiveRecordServiceProvider as ARProvider;
+use DblvdApp\Services\Models as Models;
+use Ruckuus\Silex\ActiveRecordServiceProvider as ARProvider;
 
-$app = new \Silex\Application();
+$app = new Silex\Application();
 $app['debug'] = true;
 $app['charset'] = 'utf-8';
 
-$app->register(new \Silex\Provider\TwigServiceProvider(), array(
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
         'twig.path' => SERVICES .DS. 'views' .DS. 'templates',
         'twig.options' => array(
             'cache' => SERVICES .DS. 'views' .DS. 'templates' .DS. 'cache',
