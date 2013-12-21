@@ -13,9 +13,9 @@ $app->register(new ARProvider(), array(
 ));
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => SERVICES .DS. 'views' .DS. 'templates',
+    'twig.path' => TEMPLATES,
     'twig.options' => array(
-        'cache' => SERVICES .DS. 'views' .DS. 'templates' .DS. 'cache',
+        'cache' => TEMPLATES .DS. 'cache',
         'auto_reload' => true,
         'charset' => 'utf-8'
     )

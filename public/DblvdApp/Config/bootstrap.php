@@ -9,6 +9,7 @@ define('SERVICES', CORE . DS . 'Services');
 define('CONTROLLERS', SERVICES . DS . 'Controllers');
 define('VIEWS', SERVICES . DS . 'Views');
 define('MODELS', SERVICES . DS . 'Models');
+define('TEMPLATES', VIEWS . DS . 'Templates');
 
 //registration of autoloader
 require_once(VENDOR . DS . 'autoload.php');
