@@ -6,19 +6,19 @@ $app = new Silex\Application();
 $app['debug'] = true;
 $app['charset'] = 'utf-8';
 
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-        'twig.path' => SERVICES .DS. 'views' .DS. 'templates',
-        'twig.options' => array(
-            'cache' => SERVICES .DS. 'views' .DS. 'templates' .DS. 'cache',
-            'auto_reload' => true,
-            'charset' => 'utf-8'
-        )
-    ));
-
 $app->register(new ARProvider(), array(
     'ar.model_dir' => MODELS,
     'ar.connections' =>  array ('development' => 'mysql://root@localhost/test22'),
     'ar.default_connection' => 'development',
+));
+
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => SERVICES .DS. 'views' .DS. 'templates',
+    'twig.options' => array(
+        'cache' => SERVICES .DS. 'views' .DS. 'templates' .DS. 'cache',
+        'auto_reload' => true,
+        'charset' => 'utf-8'
+    )
 ));
 
 $app->get('/{locale}/about/', function () use ($app) {
@@ -81,16 +81,7 @@ $app->get('/{lang}/', function($lang) use($app) {
             $contents = array();
             break;
     }
-    /*
-    //Create the Twig loader and direct the template source
-    $loader = new Twig_Loader_Filesystem(SERVICES .DS. 'views' .DS. 'templates');
-    //Configure Twig's environment
-    $twig = new Twig_Environment($loader, array(
-        'cache' => SERVICES .DS. 'views' .DS. 'templates' .DS. 'cache',
-        'auto_reload' => true,
-        'charset' => 'utf-8'
-    ));
-    */
+    
     //Check for JSON requests
     if(isset($requests['json'])){    
         $fileView .= '.json';
