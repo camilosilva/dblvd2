@@ -7,7 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
  */
 
 namespace Symfony\Component\HttpKernel\Debug;
@@ -259,7 +258,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, TraceableEve
      * @param object $listener  The listener
      * @param string $eventName The event name
      *
-     * @return array Informations about the listener
+     * @return array Information about the listener
      */
     private function getListenerInfo($listener, $eventName)
     {
@@ -429,7 +428,7 @@ class TraceableEventDispatcher implements EventDispatcherInterface, TraceableEve
                 } catch (\LogicException $e) {}
                 // The children profiles have been updated by the previous 'kernel.response'
                 // event. Only the root profile need to be updated with the 'kernel.terminate'
-                // timing informations.
+                // timing information.
                 $this->updateProfiles($token, false);
                 break;
         }

@@ -4,6 +4,7 @@ The dadblvd app.
 It uses:
 - Sensio Labs' Twig
 - Silex
-- PHP ActiveDirectory
+- PHP ActiveRecord
 - Bootstrap
+- Migrations: Ruckus' Ruckusing-migrations
 

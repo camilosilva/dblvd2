@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
+    'Task' => array($vendorDir . '/ruckusing/ruckusing-migrations/lib'),
     'Symfony\\Component\\Routing\\' => array($vendorDir . '/symfony/routing'),
     'Symfony\\Component\\HttpKernel\\' => array($vendorDir . '/symfony/http-kernel'),
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
@@ -14,6 +15,7 @@ return array(
     'Symfony\\Component\\Debug\\' => array($vendorDir . '/symfony/debug'),
     'Silex' => array($vendorDir . '/silex/silex/src'),
     'Ruckuus\\Silex' => array($vendorDir . '/ruckuus/php-activerecord-service-provider/src'),
+    'Ruckusing' => array($vendorDir . '/ruckusing/ruckusing-migrations/lib'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Pimple' => array($vendorDir . '/pimple/pimple/lib'),
 );

@@ -2,12 +2,17 @@
     "require": {
         "twig/twig": "1.*",
         "silex/silex": "~1.0",
-		"ruckuus/php-activerecord-service-provider": "dev-master"
+	"ruckuus/php-activerecord-service-provider": "dev-master",
+	"ruckusing/ruckusing-migrations": "dev-master"
     },
     "repositories": [
 	{
 	    "type": "git",
 	    "url": "git://github.com/ruckuus/ActiveRecordServiceProvider.git"
-	}
+	},
+	{
+	    "type": "git",
+	    "url": "git://github.com/ruckus/ruckusing-migrations.git"
+	}	
     ]
 }
