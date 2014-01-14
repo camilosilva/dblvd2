@@ -24,36 +24,27 @@ class IpUtils
     private function __construct() {}
 
     /**
-     * Checks if an IPv4 or IPv6 address is contained in the list of given IPs or subnets
+     * Validates an IPv4 or IPv6 address.
      *
-     * @param string       $requestIp   IP to check
-     * @param string|array $ips         List of IPs or subnets (can be a string if only a single one)
+     * @param string $requestIp
+     * @param string $ip
      *
      * @return boolean Whether the IP is valid
      */
-    public static function checkIp($requestIp, $ips)
+    public static function checkIp($requestIp, $ip)
     {
-        if (!is_array($ips)) {
-            $ips = array($ips);
+        if (false !== strpos($requestIp, ':')) {
+            return self::checkIp6($requestIp, $ip);
         }
 
-        $method = false !== strpos($requestIp, ':') ? 'checkIp6': 'checkIp4';
-
-        foreach ($ips as $ip) {
-            if (self::$method($requestIp, $ip)) {
-                return true;
-            }
-        }
-
-        return false;
+        return self::checkIp4($requestIp, $ip);
     }
 
     /**
-     * Compares two IPv4 addresses.
-     * In case a subnet is given, it checks if it contains the request IP.
+     * Validates an IPv4 address.
      *
-     * @param string $requestIp IPv4 address to check
-     * @param string $ip        IPv4 address or subnet in CIDR notation
+     * @param string $requestIp
+     * @param string $ip
      *
      * @return boolean Whether the IP is valid
      */
@@ -74,14 +65,13 @@ class IpUtils
     }
 
     /**
-     * Compares two IPv6 addresses.
-     * In case a subnet is given, it checks if it contains the request IP.
+     * Validates an IPv6 address.
      *
      * @author David Soria Parra <dsp at php dot net>
      * @see https://github.com/dsp/v6tools
      *
-     * @param string $requestIp IPv6 address to check
-     * @param string $ip        IPv6 address or subnet in CIDR notation
+     * @param string $requestIp
+     * @param string $ip
      *
      * @return boolean Whether the IP is valid
      *

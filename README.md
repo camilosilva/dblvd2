@@ -7,4 +7,6 @@ It uses:
 - PHP ActiveRecord
 - Bootstrap
 - Migrations: Ruckus' Ruckusing-migrations
+- Monolog
+- Silex (Symfony) Web Profiler & Debugger
 

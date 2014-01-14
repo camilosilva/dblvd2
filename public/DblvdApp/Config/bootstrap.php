@@ -1,6 +1,8 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(dirname( __DIR__ )) );
+define('LOG', ROOT . DS . '..' . DS . 'log');
+define('PROFILER', ROOT . DS . '..' . DS . 'cache'. DS . 'profiler');
 define('VENDOR', ROOT . DS . 'vendor');
 define('CORE', ROOT . DS . 'DblvdApp');
 define('CONFIG', CORE . DS . 'Config');

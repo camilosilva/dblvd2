@@ -3,7 +3,11 @@
         "twig/twig": "1.*",
         "silex/silex": "~1.0",
 	"ruckuus/php-activerecord-service-provider": "dev-master",
-	"ruckusing/ruckusing-migrations": "dev-master"
+	"ruckusing/ruckusing-migrations": "dev-master",
+	"silex/web-profiler": "1.0.*@dev",
+	"symfony/monolog-bridge": ">=2.2,<2.4-dev",
+	"monolog/monolog": ">=1.0.0",
+	"symfony/web-profiler-bundle" : "2.2.*@dev"
     },
     "repositories": [
 	{

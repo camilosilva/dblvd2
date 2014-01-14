@@ -137,7 +137,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
         // the Route has a cache of its own and is not recompiled as long as it does not get modified
         $compiledRoute = $route->compile();
 
-        return $this->doGenerate($compiledRoute->getVariables(), $route->getDefaults(), $route->getRequirements(), $compiledRoute->getTokens(), $parameters, $name, $referenceType, $compiledRoute->getHostTokens(), $route->getSchemes());
+        return $this->doGenerate($compiledRoute->getVariables(), $route->getDefaults(), $route->getRequirements(), $compiledRoute->getTokens(), $parameters, $name, $referenceType, $compiledRoute->getHostTokens());
     }
 
     /**
@@ -145,7 +145,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
      * @throws InvalidParameterException           When a parameter value for a placeholder is not correct because
      *                                             it does not match the requirement
      */
-    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = array())
+    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens)
     {
         $variables = array_flip($variables);
         $mergedParams = array_replace($defaults, $this->context->getParameters(), $parameters);
@@ -188,7 +188,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
             $url = '/';
         }
 
-        // the contexts base URL is already encoded (see Symfony\Component\HttpFoundation\Request)
+        // the contexts base url is already encoded (see Symfony\Component\HttpFoundation\Request)
         $url = strtr(rawurlencode($url), $this->decodedChars);
 
         // the path segments "." and ".." are interpreted as relative reference when resolving a URI; see http://tools.ietf.org/html/rfc3986#section-3.3
@@ -196,32 +196,15 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
         // otherwise we would generate a URI that, when followed by a user agent (e.g. browser), does not match this route
         $url = strtr($url, array('/../' => '/%2E%2E/', '/./' => '/%2E/'));
         if ('/..' === substr($url, -3)) {
-            $url = substr($url, 0, -2).'%2E%2E';
+            $url = substr($url, 0, -2) . '%2E%2E';
         } elseif ('/.' === substr($url, -2)) {
-            $url = substr($url, 0, -1).'%2E';
+            $url = substr($url, 0, -1) . '%2E';
         }
 
         $schemeAuthority = '';
         if ($host = $this->context->getHost()) {
             $scheme = $this->context->getScheme();
-
-            if ($requiredSchemes) {
-                $schemeMatched = false;
-                foreach ($requiredSchemes as $requiredScheme) {
-                    if ($scheme === $requiredScheme) {
-                        $schemeMatched = true;
-
-                        break;
-                    }
-                }
-
-                if (!$schemeMatched) {
-                    $referenceType = self::ABSOLUTE_URL;
-                    $scheme = current($requiredSchemes);
-                }
-
-            } elseif (isset($requirements['_scheme']) && ($req = strtolower($requirements['_scheme'])) && $scheme !== $req) {
-                // We do this for BC; to be removed if _scheme is not supported anymore
+            if (isset($requirements['_scheme']) && ($req = strtolower($requirements['_scheme'])) && $scheme !== $req) {
                 $referenceType = self::ABSOLUTE_URL;
                 $scheme = $req;
             }
@@ -326,7 +309,7 @@ class UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInt
         }
 
         $targetDirs[] = $targetFile;
-        $path = str_repeat('../', count($sourceDirs)).implode('/', $targetDirs);
+        $path = str_repeat('../', count($sourceDirs)) . implode('/', $targetDirs);
 
         // A reference to the same base directory or an empty subdirectory must be prefixed with "./".
         // This also applies to a segment with a colon character (e.g., "file:colon") that cannot be used

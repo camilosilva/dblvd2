@@ -29,7 +29,6 @@ class RequestContext
     private $scheme;
     private $httpPort;
     private $httpsPort;
-    private $queryString;
 
     /**
      * @var array
@@ -39,18 +38,17 @@ class RequestContext
     /**
      * Constructor.
      *
-     * @param string  $baseUrl      The base URL
-     * @param string  $method       The HTTP method
-     * @param string  $host         The HTTP host name
-     * @param string  $scheme       The HTTP scheme
-     * @param integer $httpPort     The HTTP port
-     * @param integer $httpsPort    The HTTPS port
-     * @param string  $path         The path
-     * @param string  $queryString  The query string
+     * @param string  $baseUrl   The base URL
+     * @param string  $method    The HTTP method
+     * @param string  $host      The HTTP host name
+     * @param string  $scheme    The HTTP scheme
+     * @param integer $httpPort  The HTTP port
+     * @param integer $httpsPort The HTTPS port
+     * @param string  $path      The path
      *
      * @api
      */
-    public function __construct($baseUrl = '', $method = 'GET', $host = 'localhost', $scheme = 'http', $httpPort = 80, $httpsPort = 443, $path = '/', $queryString = '')
+    public function __construct($baseUrl = '', $method = 'GET', $host = 'localhost', $scheme = 'http', $httpPort = 80, $httpsPort = 443, $path = '/')
     {
         $this->baseUrl = $baseUrl;
         $this->method = strtoupper($method);
@@ -59,7 +57,6 @@ class RequestContext
         $this->httpPort = $httpPort;
         $this->httpsPort = $httpsPort;
         $this->pathInfo = $path;
-        $this->queryString = $queryString;
     }
 
     public function fromRequest(Request $request)
@@ -71,7 +68,6 @@ class RequestContext
         $this->setScheme($request->getScheme());
         $this->setHttpPort($request->isSecure() ? $this->httpPort : $request->getPort());
         $this->setHttpsPort($request->isSecure() ? $request->getPort() : $this->httpsPort);
-        $this->setQueryString($request->server->get('QUERY_STRING'));
     }
 
     /**
@@ -226,28 +222,6 @@ class RequestContext
     public function setHttpsPort($httpsPort)
     {
         $this->httpsPort = $httpsPort;
-    }
-
-    /**
-     * Gets the query string.
-     *
-     * @return string The query string
-     */
-    public function getQueryString()
-    {
-        return $this->queryString;
-    }
-
-    /**
-     * Sets the query string.
-     *
-     * @param string $queryString The query string
-     *
-     * @api
-     */
-    public function setQueryString($queryString)
-    {
-        $this->queryString = $queryString;
     }
 
     /**

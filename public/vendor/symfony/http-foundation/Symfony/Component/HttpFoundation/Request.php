@@ -35,6 +35,8 @@ class Request
     const HEADER_CLIENT_PROTO = 'client_proto';
     const HEADER_CLIENT_PORT  = 'client_port';
 
+    protected static $trustProxy = false;
+
     protected static $trustedProxies = array();
 
     /**
@@ -64,8 +66,6 @@ class Request
     protected static $httpMethodParameterOverride = false;
 
     /**
-     * Custom parameters
-     *
      * @var \Symfony\Component\HttpFoundation\ParameterBag
      *
      * @api
@@ -73,8 +73,6 @@ class Request
     public $attributes;
 
     /**
-     * Request body parameters ($_POST)
-     *
      * @var \Symfony\Component\HttpFoundation\ParameterBag
      *
      * @api
@@ -82,8 +80,6 @@ class Request
     public $request;
 
     /**
-     * Query string parameters ($_GET)
-     *
      * @var \Symfony\Component\HttpFoundation\ParameterBag
      *
      * @api
@@ -91,8 +87,6 @@ class Request
     public $query;
 
     /**
-     * Server and execution environment parameters ($_SERVER)
-     *
      * @var \Symfony\Component\HttpFoundation\ServerBag
      *
      * @api
@@ -100,8 +94,6 @@ class Request
     public $server;
 
     /**
-     * Uploaded files ($_FILES)
-     *
      * @var \Symfony\Component\HttpFoundation\FileBag
      *
      * @api
@@ -109,8 +101,6 @@ class Request
     public $files;
 
     /**
-     * Cookies ($_COOKIE)
-     *
      * @var \Symfony\Component\HttpFoundation\ParameterBag
      *
      * @api
@@ -118,8 +108,6 @@ class Request
     public $cookies;
 
     /**
-     * Headers (taken from the $_SERVER)
-     *
      * @var \Symfony\Component\HttpFoundation\HeaderBag
      *
      * @api
@@ -504,6 +492,18 @@ class Request
     }
 
     /**
+     * Trusts $_SERVER entries coming from proxies.
+     *
+     * @deprecated Deprecated since version 2.0, to be removed in 2.3. Use setTrustedProxies instead.
+     */
+    public static function trustProxyData()
+    {
+        trigger_error('trustProxyData() is deprecated since version 2.0 and will be removed in 2.3. Use setTrustedProxies() instead.', E_USER_DEPRECATED);
+
+        self::$trustProxy = true;
+    }
+
+    /**
      * Sets a list of trusted proxies.
      *
      * You should only list the reverse proxies that you manage directly.
@@ -515,6 +515,7 @@ class Request
     public static function setTrustedProxies(array $proxies)
     {
         self::$trustedProxies = $proxies;
+        self::$trustProxy = $proxies ? true : false;
     }
 
     /**
@@ -580,21 +581,16 @@ class Request
     }
 
     /**
-     * Gets the trusted proxy header name.
+     * Returns true if $_SERVER entries coming from proxies are trusted,
+     * false otherwise.
      *
-     * @param string $key The header key
+     * @return boolean
      *
-     * @return string The header name
-     *
-     * @throws \InvalidArgumentException
+     * @deprecated Deprecated since version 2.2, to be removed in 2.3. Use getTrustedProxies instead.
      */
-    public static function getTrustedHeaderName($key)
+    public static function isProxyTrusted()
     {
-        if (!array_key_exists($key, self::$trustedHeaders)) {
-            throw new \InvalidArgumentException(sprintf('Unable to get the trusted header name for key "%s".', $key));
-        }
-
-        return self::$trustedHeaders[$key];
+        return self::$trustProxy;
     }
 
     /**
@@ -744,47 +740,6 @@ class Request
     }
 
     /**
-     * Returns the client IP addresses.
-     *
-     * In the returned array the most trusted IP address is first, and the
-     * least trusted one last. The "real" client IP address is the last one,
-     * but this is also the least trusted one. Trusted proxies are stripped.
-     *
-     * Use this method carefully; you should use getClientIp() instead.
-     *
-     * @return array The client IP addresses
-     *
-     * @see getClientIp()
-     */
-    public function getClientIps()
-    {
-        $ip = $this->server->get('REMOTE_ADDR');
-
-        if (!self::$trustedProxies) {
-            return array($ip);
-        }
-
-        if (!self::$trustedHeaders[self::HEADER_CLIENT_IP] || !$this->headers->has(self::$trustedHeaders[self::HEADER_CLIENT_IP])) {
-            return array($ip);
-        }
-
-        $clientIps = array_map('trim', explode(',', $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_IP])));
-        $clientIps[] = $ip; // Complete the IP chain with the IP the request actually came from
-
-        $ip = $clientIps[0]; // Fallback to this when the client IP falls into the range of trusted proxies
-
-        // Eliminate all IPs from the forwarded IP chain which are trusted proxies
-        foreach ($clientIps as $key => $clientIp) {
-            if (IpUtils::checkIp($clientIp, self::$trustedProxies)) {
-                unset($clientIps[$key]);
-            }
-        }
-
-        // Now the IP chain contains only untrusted proxies and the client IP
-        return $clientIps ? array_reverse($clientIps) : array($ip);
-    }
-
-    /**
      * Returns the client IP address.
      *
      * This method can read the client IP address from the "X-Forwarded-For" header
@@ -799,16 +754,30 @@ class Request
      *
      * @return string The client IP address
      *
-     * @see getClientIps()
      * @see http://en.wikipedia.org/wiki/X-Forwarded-For
      *
      * @api
      */
     public function getClientIp()
     {
-        $ipAddresses = $this->getClientIps();
+        $ip = $this->server->get('REMOTE_ADDR');
 
-        return $ipAddresses[0];
+        if (!self::$trustProxy) {
+            return $ip;
+        }
+
+        if (!self::$trustedHeaders[self::HEADER_CLIENT_IP] || !$this->headers->has(self::$trustedHeaders[self::HEADER_CLIENT_IP])) {
+            return $ip;
+        }
+
+        $clientIps = array_map('trim', explode(',', $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_IP])));
+        $clientIps[] = $ip;
+
+        $trustedProxies = self::$trustProxy && !self::$trustedProxies ? array($ip) : self::$trustedProxies;
+        $ip = $clientIps[0];
+        $clientIps = array_diff($clientIps, $trustedProxies);
+
+        return $clientIps ? array_pop($clientIps) : $ip;
     }
 
     /**
@@ -872,14 +841,14 @@ class Request
     }
 
     /**
-     * Returns the root URL from which this request is executed.
+     * Returns the root url from which this request is executed.
      *
      * The base URL never ends with a /.
      *
      * This is similar to getBasePath(), except that it also includes the
      * script filename (e.g. index.php) if one exists.
      *
-     * @return string The raw URL (i.e. not urldecoded)
+     * @return string The raw url (i.e. not urldecoded)
      *
      * @api
      */
@@ -921,7 +890,7 @@ class Request
      */
     public function getPort()
     {
-        if (self::$trustedProxies) {
+        if (self::$trustProxy) {
             if (self::$trustedHeaders[self::HEADER_CLIENT_PORT] && $port = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PORT])) {
                 return $port;
             }
@@ -1096,7 +1065,7 @@ class Request
      */
     public function isSecure()
     {
-        if (self::$trustedProxies && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
+        if (self::$trustProxy && self::$trustedHeaders[self::HEADER_CLIENT_PROTO] && $proto = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_PROTO])) {
             return in_array(strtolower(current(explode(',', $proto))), array('https', 'on', 'ssl', '1'));
         }
 
@@ -1122,7 +1091,7 @@ class Request
      */
     public function getHost()
     {
-        if (self::$trustedProxies && self::$trustedHeaders[self::HEADER_CLIENT_HOST] && $host = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_HOST])) {
+        if (self::$trustProxy && self::$trustedHeaders[self::HEADER_CLIENT_HOST] && $host = $this->headers->get(self::$trustedHeaders[self::HEADER_CLIENT_HOST])) {
             $elements = explode(',', $host);
 
             $host = $elements[count($elements) - 1];
@@ -1139,7 +1108,7 @@ class Request
         // as the host can come from the user (HTTP_HOST and depending on the configuration, SERVER_NAME too can come from the user)
         // check that it does not contain forbidden characters (see RFC 952 and RFC 2181)
         if ($host && !preg_match('/^\[?(?:[a-zA-Z0-9-:\]_]+\.?)+$/', $host)) {
-            throw new \UnexpectedValueException('Invalid Host "'.$host.'"');
+            throw new \UnexpectedValueException('Invalid Host');
         }
 
         if (count(self::$trustedHostPatterns) > 0) {
@@ -1157,7 +1126,7 @@ class Request
                 }
             }
 
-            throw new \UnexpectedValueException('Untrusted Host "'.$host.'"');
+            throw new \UnexpectedValueException('Untrusted Host');
         }
 
         return $host;
@@ -1568,6 +1537,31 @@ class Request
         return 'XMLHttpRequest' == $this->headers->get('X-Requested-With');
     }
 
+    /**
+     * Splits an Accept-* HTTP header.
+     *
+     * @param string $header Header to split
+     *
+     * @return array Array indexed by the values of the Accept-* header in preferred order
+     *
+     * @deprecated Deprecated since version 2.2, to be removed in 2.3.
+     */
+    public function splitHttpAcceptHeader($header)
+    {
+        trigger_error('splitHttpAcceptHeader() is deprecated since version 2.2 and will be removed in 2.3.', E_USER_DEPRECATED);
+
+        $headers = array();
+        foreach (AcceptHeader::fromString($header)->all() as $item) {
+            $key = $item->getValue();
+            foreach ($item->getAttributes() as $name => $value) {
+                $key .= sprintf(';%s=%s', $name, $value);
+            }
+            $headers[$key] = $item->getQuality();
+        }
+
+        return $headers;
+    }
+
     /*
      * The following methods are derived from code of the Zend Framework (1.10dev - 2010-01-24)
      *
@@ -1592,13 +1586,13 @@ class Request
             $requestUri = $this->headers->get('X_REWRITE_URL');
             $this->headers->remove('X_REWRITE_URL');
         } elseif ($this->server->get('IIS_WasUrlRewritten') == '1' && $this->server->get('UNENCODED_URL') != '') {
-            // IIS7 with URL Rewrite: make sure we get the unencoded URL (double slash problem)
+            // IIS7 with URL Rewrite: make sure we get the unencoded url (double slash problem)
             $requestUri = $this->server->get('UNENCODED_URL');
             $this->server->remove('UNENCODED_URL');
             $this->server->remove('IIS_WasUrlRewritten');
         } elseif ($this->server->has('REQUEST_URI')) {
             $requestUri = $this->server->get('REQUEST_URI');
-            // HTTP proxy reqs setup request URI with scheme and host [and port] + the URL path, only use URL path
+            // HTTP proxy reqs setup request uri with scheme and host [and port] + the url path, only use url path
             $schemeAndHttpHost = $this->getSchemeAndHttpHost();
             if (strpos($requestUri, $schemeAndHttpHost) === 0) {
                 $requestUri = substr($requestUri, strlen($schemeAndHttpHost));

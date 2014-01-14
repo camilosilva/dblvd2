@@ -171,7 +171,7 @@ class Route implements \Serializable
     {
         // A pattern must start with a slash and must not have multiple slashes at the beginning because the
         // generated path for this route would be confused with a network path, e.g. '//domain.com/path'.
-        $this->path = '/'.ltrim(trim($pattern), '/');
+        $this->path = '/' . ltrim(trim($pattern), '/');
         $this->compiled = null;
 
         return $this;
@@ -239,25 +239,6 @@ class Route implements \Serializable
         $this->compiled = null;
 
         return $this;
-    }
-
-    /**
-     * Checks if a scheme requirement has been set.
-     *
-     * @param string $scheme
-     *
-     * @return Boolean true if the scheme requirement exists, otherwise false
-     */
-    public function hasScheme($scheme)
-    {
-        $scheme = strtolower($scheme);
-        foreach ($this->schemes as $requiredScheme) {
-            if ($scheme === $requiredScheme) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -377,7 +358,7 @@ class Route implements \Serializable
     }
 
     /**
-     * Checks if an option has been set
+     * Checks if a an option has been set
      *
      * @param string $name An option name
      *

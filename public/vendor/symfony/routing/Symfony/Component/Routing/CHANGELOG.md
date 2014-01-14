@@ -1,11 +1,6 @@
 CHANGELOG
 =========
 
-2.3.0
------
-
- * added RequestContext::getQueryString()
-
 2.2.0
 -----
 
