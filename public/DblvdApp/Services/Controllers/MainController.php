@@ -10,7 +10,7 @@ $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new ARProvider(), array(
     'ar.model_dir' => MODELS,
-    'ar.connections' =>  array ('development' => 'mysql://root:loc@ltest123@localhost/test22'),
+    'ar.connections' =>  array ('development' => 'mysql://root:loc@ltest123@localhost/dadblvd'),
     'ar.default_connection' => 'development',
 ));
 

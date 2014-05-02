@@ -1,7 +1,9 @@
-/* Schema of DadBlvd2 */
+/* Schema of DadBlvd2 
 CREATE DATABASE dadblvd
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_unicode_ci;
+*/
+USE dadblvd;
 
 drop table if exists roles;
 create table roles(
