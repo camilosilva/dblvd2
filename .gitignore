@@ -88,3 +88,10 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
+# Silex cache
+cache
+cache/*
+
+# public vendor
+public/vendor
+public/vendor/*
