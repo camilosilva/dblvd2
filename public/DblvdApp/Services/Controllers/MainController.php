@@ -3,9 +3,9 @@
 use DblvdApp\Services\Models as Models;
 use DblvdApp\Services\Controllers\UserProvider as UserProvider;
 use Ruckuus\Silex\ActiveRecordServiceProvider as ARProvider;
-use Silex\Provider\FormServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 
@@ -13,13 +13,6 @@ $app = new Silex\Application();
 $app['debug'] = true;
 $app['charset'] = 'utf-8';
 
-
-
-
-
-
-//$u = new User();
-//$f = new FF(null,null);
 
 /* FIREWALL SECURITY SERVICE PROVIDER DEFINITIONS */
 
@@ -55,7 +48,7 @@ $app['security.firewalls'] = array(
     );
     
     $app['security.access_rules'] = array(
-        array('^/admin/home$', 'ROLE_ADMIN'),
+        array('^/admin/settings/.*$', 'ROLE_ADMIN'),
         array('^.*$', 'ROLE_USER')
     );
 
@@ -66,16 +59,19 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
+$app->register(new Silex\Provider\FormServiceProvider());
+
+$app->register(new Silex\Provider\TranslationServiceProvider(), array(
+    'translator.messages' => array(),
+));
+
 $app->register(new ARProvider(), array(
     'ar.model_dir' => MODELS,
     'ar.connections' =>  array ('development' => 'mysql://root:loc@ltest123@localhost/dadblvd'),
     'ar.default_connection' => 'development',
 ));
-
-
-    
-
-
+ 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => TEMPLATES,
     'twig.options' => array(
@@ -98,6 +94,15 @@ if ($app['debug']) {
         'profiler.mount_prefix' => '/_profiler', // this is the default
     ));    
 }
+
+/////////////////////
+/////////////////////
+/////////////////////
+
+
+//////////////////////////////////////
+///////////// ROUTINGS ///////////////
+//////////////////////////////////////
 
 //Security pages controller
 $app->get('/login' , function(Request $request) use($app){
@@ -147,9 +152,77 @@ $app->get('/admin/login_check', function() use ($app) {
 );
 
 
+// ADMIN : Register new users to the system
+// ADMIN : Create new user in this section... Make sure that it is possible
 
-//Register new users to the system
-//Create new user in this section... Make sure that it is possible
+$app->match('/admin/adduser', function (Request $request) use ($app) {
+    if (!$app['security']->isGranted('ROLE_ADMIN')) {
+        $app['monolog']->addDebug('Not an Admin');   
+        return $app->redirect('/login');
+    }
+    $errors = array();
+
+    // some default data needed when the form is displayed the first time
+    $data = array(
+        'name' => 'Username',
+        'password' => 'Password',
+        'admin' => false
+    );
+
+    $form = $app['form.factory']->createBuilder('form', $data)
+        ->add('name','text', array(
+            'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 5)))
+        ))
+        ->add('password','text', array(
+            'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 5)))
+        ))
+        ->add('admin','checkbox',array(
+            'label'     => 'Admin?',
+            'required'  => false,
+	))
+        ->getForm();
+
+    if ('POST' == $request->getMethod()) {
+        $form->bind($request);
+
+        if ($form->isValid()) {
+	    $data = $form->getData();
+            
+            error_log("data:::" . print_r($data,true));
+            
+	    $password=$app['security.encoder.digest']->encodePassword($data['password'],'');        
+            $role = 'ROLE_USER';
+            if($data['admin']==true){
+		$role = 'ROLE_ADMIN';
+            }
+            try{
+                error_log("1");
+                $user = DblvdApp\Services\Models\User::create(array(
+                    'username' => $data['name'],
+                    'password' => $password,
+                    'roles' => $role
+                ));
+                error_log("2 USER === " . print_r($user,true));
+                return $app->redirect('/admin/adduser');
+	    } catch( Exception $e ){
+                error_log("EXCEPTION FOUND!!!" );
+                //error_log(print_r($e->getTrace(), true));
+		$errors[] = "User already present";
+                $errors[] = $e->getMessage();
+	    }
+        }
+    }
+
+    // display the form
+    return $app['twig']->render(
+            'admin_adduser.html',
+            array('form' => $form->createView(),'errors'=>$errors,'active_tab'=>'admin'));
+});
+
+
+////////////////////////////////////////////////////
+
+
 
 $app->get('/{locale}/about/', function () use ($app) {
     $locale = $app['request']->get('locale');
