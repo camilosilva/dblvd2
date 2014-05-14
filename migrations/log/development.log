@@ -1,0 +1,11 @@
+May 08 23:18:29 [info] SELECT version FROM schema_migrations
+May 08 23:18:29 [info] SELECT version FROM schema_migrations
+May 08 23:18:29 [info] SELECT version FROM schema_migrations
+May 08 23:18:29 [info] SHOW FULL COLUMNS FROM `users` LIKE 'password'
+May 08 23:18:29 [info] ALTER TABLE `users` CHANGE `password` `password` varchar(128)
+May 08 23:18:29 [info] ALTER TABLE `users` ADD `roles` varchar(128)
+May 08 23:18:30 [info] ALTER TABLE `users` ADD `created_at` datetime
+May 08 23:18:30 [info] ALTER TABLE `users` ADD `updated_at` datetime
+May 08 23:18:30 [info] INSERT INTO users (username, password, roles, created_at, updated_at) VALUES ('mr.admin','5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==','ROLE_ADMIN', NOW(), NOW())
+May 08 23:18:30 [info] INSERT INTO users (username, password, roles, created_at, updated_at) VALUES ('local','5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==','ROLE_USER', NOW(), NOW())
+May 08 23:18:30 [info] INSERT INTO schema_migrations (version) VALUES ('20140509025311')

@@ -1,6 +1,7 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(dirname( __DIR__ )) );
+define('MIGRATIONS', ROOT . DS . '..' . DS . 'migrations');
 define('LOG', ROOT . DS . '..' . DS . 'log');
 define('PROFILER', ROOT . DS . '..' . DS . 'cache'. DS . 'profiler');
 define('VENDOR', ROOT . DS . 'vendor');
