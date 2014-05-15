@@ -20,6 +20,9 @@ $__LOADER = new \Composer\Autoload\ClassLoader();
 $__LOADER->add('DblvdApp', ROOT);
 $__LOADER->register();
 
+//Set valid timestamp format needed for the DB inserts/updated
+\ActiveRecord\Connection::$datetime_format = 'Y-m-d H:i:s';
+
 
 
 

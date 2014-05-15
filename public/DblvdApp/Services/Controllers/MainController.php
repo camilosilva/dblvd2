@@ -145,11 +145,10 @@ $app->get('/admin/login_check', function() use ($app) {
     }
     
     return $app['twig']->render('login_check.html', array(
-        'username'         => $username
+        'username' => $username
     ));
     
-}
-);
+});
 
 
 // ADMIN : Register new users to the system
@@ -188,25 +187,20 @@ $app->match('/admin/adduser', function (Request $request) use ($app) {
         if ($form->isValid()) {
 	    $data = $form->getData();
             
-            error_log("data:::" . print_r($data,true));
-            
 	    $password=$app['security.encoder.digest']->encodePassword($data['password'],'');        
             $role = 'ROLE_USER';
             if($data['admin']==true){
 		$role = 'ROLE_ADMIN';
             }
             try{
-                error_log("1");
                 $user = DblvdApp\Services\Models\User::create(array(
                     'username' => $data['name'],
                     'password' => $password,
                     'roles' => $role
                 ));
-                error_log("2 USER === " . print_r($user,true));
                 return $app->redirect('/admin/adduser');
 	    } catch( Exception $e ){
                 error_log("EXCEPTION FOUND!!!" );
-                //error_log(print_r($e->getTrace(), true));
 		$errors[] = "User already present";
                 $errors[] = $e->getMessage();
 	    }
@@ -268,21 +262,6 @@ $app->get('/{lang}/home', function($lang) use($app) {
         
         case 'en':
         default:
-            try{
-                $role = new Models\Role();
-                $role->printTest();
-            }
-            catch(Exception $e) {
-                //error_log(print_r($e, true));
-                var_dump($e);
-                //print_r($e,true);
-            }
-            
-            //$role->printThis();
-            error_log("TEST 22");
-            
-            //Monolog test
-            $app['monolog']->addDebug('Testing the Monolog logging.');
             
             $fileView = 'index';
             $contents = array();

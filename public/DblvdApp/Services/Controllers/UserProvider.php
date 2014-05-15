@@ -15,10 +15,8 @@ class UserProvider implements UserProviderInterface
     public function loadUserByUsername($username)
     {
         $user = User::find_by_username($username);
-        error_log("USER [".$user->getUsername()."] PASSWORD:: " . print_r($user->password,true));
 
         if ($user == null || !$user->getUsername()) {
-            error_log("****NOT EXIST");
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
         }
 
