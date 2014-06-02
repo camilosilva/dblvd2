@@ -91,7 +91,13 @@ $RECYCLE.BIN/
 # Silex cache
 cache
 cache/*
+log
+log/*
 
 # public vendor
 public/vendor
 public/vendor/*
+
+# public views templates cached
+public/DblvdApp/Services/Views/Templates/cache
+public/DblvdApp/Services/Views/Templates/cache/*
