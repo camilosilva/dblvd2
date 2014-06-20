@@ -1,9 +1,16 @@
 default:
     paths:
         features: features
-        bootstrap: %behat.paths.features%/bootstrap
+        bootstrap: features/bootstrap
     extensions:
         Behat\MinkExtension\Extension:
             base_url: http://dadblvd.localhost
             goutte: ~
             selenium2: ~
+annotations:
+    paths:
+        features: features/annotations
+
+closures:
+    paths:
+        features: features/closures
